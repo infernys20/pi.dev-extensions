@@ -4,9 +4,26 @@ Personal collection of extensions for [Pi](https://github.com/badlogic/pi-mono) 
 
 This repo is a work in progress and **will be updated with more extensions as time goes on**. New extensions are added here as they are built, refined, and proven useful in real sessions. Expect the contents to change frequently; check back for updates, or watch the git history to follow along.
 
-## Current extension: Watchdog
+## ChatGPT Quota
 
-`watchdog.ts` — keeps a session alive when an assistant turn dies with an error.
+[`chatgpt-quota.ts`](./chatgpt-quota.ts) shows how much of your shared ChatGPT plan quota is left in Pi's footer, with countdowns for the 5-hour and weekly windows that OpenAI reports:
+
+```text
+ChatGPT plan · 5h 43% left (↻ 30m) · Week 75% left (↻ 1d 0h)
+```
+
+**Setup** (tested with Pi 1.6.0):
+
+1. Copy `chatgpt-quota.ts` to `~/.pi/agent/extensions/` and run `/reload` (or restart Pi).
+2. Use `/login openai` with **Sign in with ChatGPT** and select an `openai` model. API-key usage is not supported.
+3. Run `/login openai-codex` and sign in to the **same ChatGPT account and workspace**. Keep your `openai` model selected; the Codex login is only used to read quota.
+4. Run `/chatgpt-quota` to refresh manually. The extension also fetches quota on startup and every three minutes.
+
+The footer shows **shared plan limits**, not a separate Pi app allowance. It uses experimental, read-only ChatGPT endpoints that may change. If quota is unavailable, `/chatgpt-quota` gives setup or troubleshooting guidance; you can also check [ChatGPT Settings → Usage](https://chatgpt.com/settings/usage).
+
+## Watchdog
+
+[`watchdog.ts`](./watchdog.ts) helps a session recover when an assistant turn dies with an error. Automatic retries are off by default; use `/watchdog on` to enable them.
 
 Some provider failures (capacity errors, transient upstream hiccups, and other errors that Pi's built-in retry logic does not classify as retryable) end the turn and leave you staring at a dead session. The Watchdog extension notices these failed runs and automatically nudges the session to continue by queueing a single `.` user message after the run has settled.
 
