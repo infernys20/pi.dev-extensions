@@ -7,7 +7,7 @@
  * session to continue automatically.
  *
  * It stops after a bounded number of consecutive retries and resets after any
- * successful assistant response.
+ * successful assistant response. Automatic retries are off by default.
  *
  * Commands:
  *   /watchdog          show status
@@ -26,7 +26,7 @@ interface AssistantLike {
 }
 
 export default function (pi: ExtensionAPI) {
-	let enabled = true;
+	let enabled = false;
 	let armed = false;
 	let lastError: string | undefined;
 	let retries = 0;
